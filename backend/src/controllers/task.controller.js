@@ -1,4 +1,5 @@
 import Task from "../models/task.schema.js";
+import mongoose from "mongoose";
 
 export const createTaskController = async (req, res) => {
     try {
@@ -29,6 +30,66 @@ export const createTaskController = async (req, res) => {
         res.status(400).json({
             success: false,
             message: error.message,
+        });
+    }
+};
+
+export const getAllTasks = async (req, res) => {
+    try {
+        const tasks = await Task.find();
+
+        if (tasks.length === 0) {
+            return res.status(404).send({
+                success: false,
+                message: "Tasks not found, Please add tasks",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Task fetched from the database",
+            count: tasks.length,
+            data: tasks,
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message,
+            data: null,
+        });
+    }
+};
+
+export const getTask = async (req, res) => {
+    const { taskId } = req.params;
+    try {
+        //validate the id because server expects 24 character id if we write like api/tasks/123 it will show a cast error
+        if (!mongoose.Types.ObjectId.isValid(taskId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter a valid task id",
+                data: null,
+            });
+        }
+        const task = await Task.findById(taskId);
+        if (!task) {
+            return res.status(404).json({
+                success: false,
+                message: "Task not found",
+                data: null,
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Task found successfully",
+            data: task,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            data: null,
         });
     }
 };
