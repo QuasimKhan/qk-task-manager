@@ -93,3 +93,95 @@ export const getTask = async (req, res) => {
         });
     }
 };
+
+export const editTask = async (req, res) => {
+    const { taskId } = req.params;
+    const { title, description, status, priority } = req.body;
+
+    try {
+        //validate the taskId
+        if (!mongoose.Types.ObjectId.isValid(taskId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter a valid task id.",
+                data: null,
+            });
+        }
+
+        //prepare for dynamic update data
+        const updateFeilds = {};
+
+        if (title !== undefined) {
+            updateFeilds.title = title;
+        }
+        if (description !== undefined) {
+            updateFeilds.description = description;
+        }
+        if (status !== undefined) {
+            updateFeilds.status = status;
+        }
+        if (priority !== undefined) {
+            updateFeilds.priority = priority;
+        }
+
+        const updatedTask = await Task.findByIdAndUpdate(taskId, updateFeilds, {
+            new: true,
+            runValidators: true,
+        });
+
+        if (!updatedTask) {
+            return res.status(404).json({
+                success: false,
+                message: "Task not Found",
+                data: null,
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: "Task updated Successfully",
+            data: updatedTask,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            data: null,
+        });
+    }
+};
+
+export const deleteTask = async (req, res) => {
+    const { taskId } = req.params;
+
+    try {
+        //validate task id
+        if (!mongoose.Types.ObjectId.isValid(taskId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter the valid task id",
+                data: null,
+            });
+        }
+
+        const deletedTask = await Task.findByIdAndDelete(taskId);
+        if (!deletedTask) {
+            return res.status(404).json({
+                success: false,
+                message: "Task Id not found",
+                data: null,
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Task has been deleted successfully",
+            data: deletedTask,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+            data: null,
+        });
+    }
+};
