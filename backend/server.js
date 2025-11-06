@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
 import taskRouter from "./src/routes/task.routes.js";
+import cors from "cors";
 dotenv.config();
 
 const app = express();
@@ -9,6 +10,7 @@ const PORT = process.env.PORT || 3000;
 
 //middlewares
 app.use(express.json());
+app.use(cors());
 
 //connect db
 connectDB();
