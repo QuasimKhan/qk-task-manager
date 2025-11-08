@@ -33,7 +33,7 @@ export const registerController = async (req, res) => {
             password: hashedPass,
         });
 
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             message: "User Created Successfully",
             data: user,
