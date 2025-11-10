@@ -18,7 +18,7 @@ export const createTaskController = async (req, res) => {
             description,
             status,
             priority,
-            // user: req.user?._id      //uncomment it when add authentication feature
+            user: req.user?._id, //uncomment it when add authentication feature
         });
 
         res.status(201).json({
@@ -36,7 +36,7 @@ export const createTaskController = async (req, res) => {
 
 export const getAllTasks = async (req, res) => {
     try {
-        const tasks = await Task.find();
+        const tasks = await Task.find({ user: req.user?._id });
 
         if (tasks.length === 0) {
             return res.status(404).send({

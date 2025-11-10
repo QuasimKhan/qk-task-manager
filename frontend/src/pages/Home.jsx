@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getTasks } from "../services/api.js";
+import { Link } from "react-router-dom";
 
 const Home = () => {
     const [tasks, setTasks] = useState([]);
@@ -29,6 +30,11 @@ const Home = () => {
 
     return (
         <div>
+            <div>
+                <h1>Navbar</h1>
+                <Link to="/create-task">Create Task</Link>
+                <Link to="/login">Login</Link>
+            </div>
             <h2>All Tasks</h2>
             {tasks.length === 0 ? (
                 <p>No tasks found</p>

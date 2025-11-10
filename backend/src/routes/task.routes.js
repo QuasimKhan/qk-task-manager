@@ -6,10 +6,11 @@ import {
     getAllTasks,
     getTask,
 } from "../controllers/task.controller.js";
+import { verifyToken } from "../middlewares/auth.middleware.js";
 
 const taskRouter = express.Router();
 
-taskRouter.post("/create-task", createTaskController);
+taskRouter.post("/create-task", verifyToken, createTaskController);
 taskRouter.get("/", getAllTasks);
 taskRouter.get("/:taskId", getTask);
 taskRouter.put("/edit/:taskId", editTask);
